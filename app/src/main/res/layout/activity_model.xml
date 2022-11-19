@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     >
 
-    <fragment
+    <FrameLayout
         android:id="@+id/top_fragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -20,7 +20,7 @@
         tools:layout="@layout/activity_main"
         />
 
-    <fragment
+    <FrameLayout
         android:id="@+id/middle_fragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -32,7 +32,7 @@
         tools:layout="@layout/fragment_stat_list"
         />
 
-    <fragment
+    <FrameLayout
         android:id="@+id/bottom_fragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
