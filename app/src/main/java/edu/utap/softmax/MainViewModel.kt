@@ -15,5 +15,11 @@ class MainViewModel: ViewModel() {
         models.postValue(softmaxClient.getModels())
     }
 
+    fun fetchModel(modelId: String) = viewModelScope.launch(
+        context = viewModelScope.coroutineContext + Dispatchers.IO
+    ) {
+        val model = softmaxClient.get(modelId)
+    }
+
     fun observeModels(): LiveData<List<SoftmaxClient.Model>> = models
 }
