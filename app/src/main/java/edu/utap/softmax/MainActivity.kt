@@ -17,7 +17,9 @@ class MainActivity : AppCompatActivity() {
         val activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
 
-        val adapter = ModelRowAdapter()
+        val adapter = ModelRowAdapter() { model ->
+            viewModel.fetchModel(model.modelId)
+        }
 
         activityMainBinding.recyclerView.layoutManager = LinearLayoutManager(this)
         activityMainBinding.recyclerView.adapter = adapter

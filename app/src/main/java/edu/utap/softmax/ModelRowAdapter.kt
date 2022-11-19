@@ -1,13 +1,16 @@
 package edu.utap.softmax
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import edu.utap.softmax.databinding.RowModelBinding
 
-class ModelRowAdapter : ListAdapter<SoftmaxClient.Model, ModelRowAdapter.ViewHolder>(ModelDiff()) {
+class ModelRowAdapter(
+    private val onClickListener: (model: SoftmaxClient.Model) -> Unit
+) : ListAdapter<SoftmaxClient.Model, ModelRowAdapter.ViewHolder>(ModelDiff()) {
 
     class ModelDiff : DiffUtil.ItemCallback<SoftmaxClient.Model>() {
         override fun areItemsTheSame(
@@ -27,12 +30,18 @@ class ModelRowAdapter : ListAdapter<SoftmaxClient.Model, ModelRowAdapter.ViewHol
 
     inner class ViewHolder(private val rowBinding: RowModelBinding)
     : RecyclerView.ViewHolder(rowBinding.root) {
-        fun bind(model: SoftmaxClient.Model) {
-            rowBinding.name.text = model.name
 
-            rowBinding.root.setOnClickListener {
-                println(model.modelId)
+        private lateinit var model: SoftmaxClient.Model
+
+        init {
+            rowBinding.root.setOnClickListener { view ->
+                onClickListener(model)
             }
+        }
+
+        fun bind(model: SoftmaxClient.Model) {
+            this.model = model
+            rowBinding.name.text = model.name
         }
     }
 
