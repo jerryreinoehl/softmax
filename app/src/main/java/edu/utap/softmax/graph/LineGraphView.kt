@@ -19,10 +19,11 @@ class LineGraphView @JvmOverloads constructor(
         private const val PADDING = 10
         private const val STROKE_WIDTH = 4f
         private val COLORS = listOf(
-            Color.rgb(0x00, 0xaa, 0xff),
-            Color.rgb(0x33, 0x33, 0xcc),
+            Color.rgb(0xcc, 0x00, 0xcc),
+            Color.rgb(0xff, 0x66, 0x00),
             Color.rgb(0x00, 0x99, 0xcc),
-            Color.rgb(0x00, 0x99, 0x00),
+            Color.rgb(0x33, 0x33, 0xff),
+            Color.rgb(0x33, 0x99, 0x66),
         )
     }
 
