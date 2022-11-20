@@ -62,6 +62,11 @@ class LineGraphView @JvmOverloads constructor(
     }
 
     private fun addPlot(plot: Plot) {
+        if (plot.size == 0)
+            return
+        if (plot[0].size == 0)
+            return
+
         var minX = plot[0][0].x
         var minY = plot[0][0].y
         var maxX = minX
@@ -84,18 +89,23 @@ class LineGraphView @JvmOverloads constructor(
         paths = mutableListOf()
         val width = width.toFloat() - PADDING * 2
         val height = height.toFloat() - PADDING * 2
+        val rangeX = maxX - minX
+        val rangeY = maxY - minY
 
         plot.forEach { points ->
+            if (points.size < 2)
+                return@forEach
+
             val path = Path()
             path.moveTo(points[0].x, points[0].y)
             path.moveTo(
-                width * points[0].x / (maxX - minX) + PADDING,
-                height - height * points[0].y / (maxY - minY) + PADDING
+                width * (points[0].x - minX) / rangeX + PADDING,
+                height - height * (points[0].y - minY) / rangeY + PADDING
             )
 
             points.forEach { point ->
-                val x = width * point.x / (maxX - minX) + PADDING
-                val y = height - height * point.y / (maxY - minY) + PADDING
+                val x = width * (point.x - minX) / rangeX + PADDING
+                val y = height - height * (point.y - minY) / rangeY + PADDING
                 path.lineTo(x, y)
             }
 

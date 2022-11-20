@@ -2,6 +2,7 @@ package edu.utap.softmax.graph
 
 class Points {
     private val points: MutableList<Point> = mutableListOf()
+    val size get() = points.size
 
     fun add(point: Point) {
         points.add(point)
