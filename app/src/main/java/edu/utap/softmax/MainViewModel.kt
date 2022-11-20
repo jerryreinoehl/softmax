@@ -8,6 +8,14 @@ class MainViewModel: ViewModel() {
     private val softmaxClient = SoftmaxClient.create()
 
     private val models = MutableLiveData<List<SoftmaxClient.Model>>()
+    private val model = MutableLiveData<SoftmaxClient.Model>()
+    private val run = MediatorLiveData<SoftmaxClient.Run>().apply {
+        addSource(model) {
+            runNum = 0
+            updateRun()
+        }
+    }
+    private var runNum = 0
 
     fun fetchModels() = viewModelScope.launch(
         context = viewModelScope.coroutineContext + Dispatchers.IO
@@ -18,8 +26,31 @@ class MainViewModel: ViewModel() {
     fun fetchModel(modelId: String) = viewModelScope.launch(
         context = viewModelScope.coroutineContext + Dispatchers.IO
     ) {
-        val model = softmaxClient.get(modelId)
+        model.postValue(softmaxClient.get(modelId))
+    }
+
+    fun nextRun() {
+        val totalRuns = model.value?.runs?.size ?: 0
+        runNum = (runNum + 1).mod(totalRuns)
+        updateRun()
+    }
+
+    fun prevRun() {
+        val totalRuns = model.value?.runs?.size ?: 0
+        runNum = (runNum - 1).mod(totalRuns)
+        updateRun()
+    }
+
+    private fun updateRun() {
+        val runs = model.value?.runs
+        runs?.let {
+            run.value = runs[runNum]
+        }
     }
 
     fun observeModels(): LiveData<List<SoftmaxClient.Model>> = models
+
+    fun observeModel(): LiveData<SoftmaxClient.Model> = model
+
+    fun observeRun(): LiveData<SoftmaxClient.Run> = run
 }

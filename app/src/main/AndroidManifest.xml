@@ -32,6 +32,7 @@
 
         <activity
             android:name=".ModelActivity"
+            android:parentActivityName=".MainActivity"
             android:exported="false">
         </activity>
     </application>
