@@ -8,7 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 import edu.utap.softmax.databinding.FragmentStatListBinding
 
@@ -38,6 +40,7 @@ class StatListFragment: Fragment() {
 
         binding.recyclerview.layoutManager = LinearLayoutManager(context)
         binding.recyclerview.adapter = adapter
+        initRecyclerViewDivider(binding.recyclerview)
 
         viewModel.observeRun().observe(viewLifecycleOwner) { run ->
             adapter.submitList(run.log)
@@ -54,5 +57,12 @@ class StatListFragment: Fragment() {
                 viewModel.nextRun()
             }
         })
+    }
+
+    private fun initRecyclerViewDivider(recyclerView: RecyclerView) {
+        val dividerItemDecoration = DividerItemDecoration(
+            recyclerView.context, LinearLayoutManager.VERTICAL
+        )
+        recyclerView.addItemDecoration(dividerItemDecoration)
     }
 }
