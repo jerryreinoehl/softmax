@@ -11,7 +11,6 @@ class MainViewModel: ViewModel() {
     private val model = MutableLiveData<SoftmaxClient.Model>()
     private val run = MediatorLiveData<SoftmaxClient.Run>().apply {
         addSource(model) {
-            runNum = 0
             updateRun()
         }
     }
@@ -44,6 +43,8 @@ class MainViewModel: ViewModel() {
     private fun updateRun() {
         val runs = model.value?.runs
         runs?.let {
+            if (runNum > runs.size)
+                runNum = runs.size - 1
             run.value = runs[runNum]
         }
     }
