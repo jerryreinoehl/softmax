@@ -7,7 +7,9 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.Typeface
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
+import kotlin.math.abs
 
 class LineGraphView @JvmOverloads constructor(
     context: Context,
@@ -25,13 +27,14 @@ class LineGraphView @JvmOverloads constructor(
             Color.rgb(0x33, 0x33, 0xff),
             Color.rgb(0x33, 0x99, 0x66),
         )
+        private val POINTER_COLOR = Color.rgb(0x60, 0x60, 0x60)
     }
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
-        textAlign = Paint.Align.CENTER
-        textSize = 55.0f
-        typeface = Typeface.create("", Typeface.BOLD)
+        textAlign = Paint.Align.LEFT
+        textSize = 32.0f
+        typeface = Typeface.create("monospace", Typeface.NORMAL)
         isAntiAlias = true
     }
 
@@ -39,9 +42,12 @@ class LineGraphView @JvmOverloads constructor(
     set(adapter) {
         field = adapter
         field.onSubmitPlotListener = onSubmitPlotListener
+        field.onClearListener = onClearListener
     }
 
     private var paths: MutableList<Path> = mutableListOf()
+    private var snapPoints: MutableList<Float> = mutableListOf()
+    private var pointerX = 0f
 
     private val onSubmitPlotListener = object : LineGraphAdapter.OnSubmitPlotListener() {
         override fun onSubmitPlot(plot: Plot) {
@@ -49,16 +55,55 @@ class LineGraphView @JvmOverloads constructor(
         }
     }
 
+    private val onClearListener = object : LineGraphAdapter.OnClearListener() {
+        override fun onClear() {
+            paths = mutableListOf()
+        }
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         paint.strokeWidth = STROKE_WIDTH
 
+        drawPlots(canvas)
+        drawPointer(canvas)
+    }
+
+    private fun drawPlots(canvas: Canvas?) {
         var colorIndex = 0
+
+        paint.style = Paint.Style.STROKE
 
         paths.forEach { path ->
             paint.color = COLORS[colorIndex++.mod(COLORS.size)]
             canvas?.drawPath(path, paint)
         }
+    }
+
+    private fun drawPointer(canvas: Canvas?) {
+        paint.color = POINTER_COLOR
+        paint.style = Paint.Style.STROKE
+        canvas?.drawLine(pointerX, 0f, pointerX, height.toFloat(), paint)
+    }
+
+    private fun drawLegend(canvas: Canvas?) {
+        paint.color = POINTER_COLOR
+        paint.style = Paint.Style.STROKE
+        val legendX = pointerX + PADDING
+        val legendY = height.toFloat() / 2
+        val legendWidth = 200
+        val legendHeight = 100
+
+        canvas?.drawRect(
+            legendX,
+            legendY,
+            legendX + legendWidth,
+            legendY + legendHeight,
+            paint
+        )
+
+        paint.style = Paint.Style.FILL
+        canvas?.drawText("test", legendX, legendY, paint)
     }
 
     private fun addPlot(plot: Plot) {
@@ -86,13 +131,16 @@ class LineGraphView @JvmOverloads constructor(
             }
         }
 
-        paths = mutableListOf()
         val width = width.toFloat() - PADDING * 2
         val height = height.toFloat() - PADDING * 2
         val rangeX = maxX - minX
         val rangeY = maxY - minY
 
+        snapPoints = mutableListOf()
+
         plot.forEach { points ->
+            val snaps: MutableList<Float> = mutableListOf()
+
             if (points.size < 2)
                 return@forEach
 
@@ -107,11 +155,90 @@ class LineGraphView @JvmOverloads constructor(
                 val x = width * (point.x - minX) / rangeX + PADDING
                 val y = height - height * (point.y - minY) / rangeY + PADDING
                 path.lineTo(x, y)
+                snaps.add(x)
             }
 
             paths.add(path)
+            mergeSnapPoints(snapPoints, snaps)
         }
 
         invalidate()
+    }
+
+    private fun mergeSnapPoints(lhs: List<Float>, rhs: List<Float>) {
+        var l = 0
+        var r = 0
+        var valueL: Float
+        var valueR: Float
+        val threshold = 0.01
+        var newList: MutableList<Float> = mutableListOf()
+
+        while (true) {
+            if ((l >= lhs.size) and (r >= rhs.size)) {
+                break
+            } else if (l >= lhs.size) {
+                newList.add(rhs[r])
+                r++
+                continue
+            } else if (r >= rhs.size){
+                newList.add(lhs[l])
+                l++
+                continue
+            }
+
+            valueL = lhs[l]
+            valueR = rhs[r]
+
+            if (abs(valueL - valueR) < threshold) {
+                newList.add(valueL)
+                l++
+                r++
+            } else if (valueL < valueR) {
+                newList.add(valueL)
+                l++
+            } else {
+                newList.add(valueR)
+                r++
+            }
+        }
+
+        snapPoints = newList
+    }
+
+    private fun getSnapX(x: Float): Float {
+        var mid: Int
+        var min = 0
+        var max = snapPoints.size
+        var distance = width.toFloat()
+        var snapX: Float = snapPoints[0]
+        var value: Float
+
+        while (min < max) {
+            mid = (max + min) / 2
+            value = snapPoints[mid]
+            if (abs(x - value) < distance) {
+                snapX = value
+                distance = abs(x - value)
+            }
+
+            if (x > value) {
+                min = mid + 1
+            } else {
+                max = mid
+            }
+        }
+
+        return snapX
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        super.onTouchEvent(event)
+
+        if (snapPoints.size > 1) {
+            pointerX = getSnapX(event?.x ?: 0f)
+            invalidate()
+        }
+
+        return true
     }
 }

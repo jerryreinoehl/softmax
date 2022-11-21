@@ -39,23 +39,29 @@ class GraphFragment : Fragment() {
         graphView.adapter = graphAdapter
 
         viewModel.observeModel().observe(viewLifecycleOwner) { model ->
-            graphAdapter.submitPlot(plotFromRun(model))
+            plot(model, graphAdapter)
         }
     }
 
-    private fun plotFromRun(model: SoftmaxClient.Model): Plot {
-        val plot = Plot()
+    private fun plot(model: SoftmaxClient.Model, graphAdapter: LineGraphAdapter) {
+        val lossPlot = Plot()
+        val accuracyPlot = Plot()
 
         model.runs.forEach { run ->
-            val points = Points()
+            val lossPoints = Points()
+            val accuracyPoints = Points()
 
             run.log.forEach { logItem ->
-                points.add(logItem.step.toFloat(), logItem.data.loss)
+                lossPoints.add(logItem.step.toFloat(), logItem.data.loss)
+                accuracyPoints.add(logItem.step.toFloat(), logItem.data.accuracy)
             }
 
-            plot.add(points)
+            lossPlot.add(lossPoints)
+            accuracyPlot.add(accuracyPoints)
         }
 
-        return plot
+        graphAdapter.clear()
+        graphAdapter.submitPlot(lossPlot)
+        graphAdapter.submitPlot(accuracyPlot)
     }
 }
