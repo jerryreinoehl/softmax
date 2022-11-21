@@ -17,7 +17,6 @@ open class OnSwipeTouchListener(context: Context) : View.OnTouchListener {
     private val gestureDetector = GestureDetector(context, GestureListener())
 
     override fun onTouch(view: View, event: MotionEvent): Boolean {
-        view.performClick()
         return gestureDetector.onTouchEvent(event)
     }
 
