@@ -14,12 +14,14 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import edu.utap.softmax.databinding.ActivityModelBinding
+import kotlinx.coroutines.*
 
-class ModelActivity : AppCompatActivity() {
+class ModelActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private val viewModel: MainViewModel by viewModels()
 
     companion object {
+        private const val REFRESH_RATE = 2000L
         private const val MODEL_ID_KEY = "edu.utap.softmax.MODEL_ID_KEY"
 
         fun newIntent(context: Context, modelId: String): Intent {
@@ -52,7 +54,11 @@ class ModelActivity : AppCompatActivity() {
 
         val modelId = intent.extras?.getString(MODEL_ID_KEY) ?: ""
 
-        viewModel.fetchModel(modelId)
+        viewModel.observeModel().observe(this) { model ->
+            supportActionBar?.title = model.name
+        }
+
+        refresh(modelId)
     }
     private fun hideSystemBars() {
         val windowInsetsController = ViewCompat.getWindowInsetsController(window.decorView) ?: return
@@ -76,6 +82,17 @@ class ModelActivity : AppCompatActivity() {
                 systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                         View.SYSTEM_UI_FLAG_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            }
+        }
+    }
+
+    private fun refresh(modelId: String) {
+        launch {
+            val timerJob = async {
+                while (true) {
+                    viewModel.fetchModel(modelId)
+                    delay(REFRESH_RATE)
+                }
             }
         }
     }
