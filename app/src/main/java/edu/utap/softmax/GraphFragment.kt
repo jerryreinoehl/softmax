@@ -58,6 +58,9 @@ class GraphFragment : Fragment() {
         var colorIndex = 0
 
         model.runs.forEach { run ->
+            if (!viewModel.isRunEnabled(run))
+                return@forEach
+
             val lossPoints = Points()
             val accuracyPoints = Points()
 

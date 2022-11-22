@@ -15,6 +15,7 @@ class MainViewModel: ViewModel() {
         }
     }
     private var runNum = 0
+    var enabledRuns: MutableMap<String, Boolean> = mutableMapOf()
 
     fun getRunNum() = runNum
 
@@ -49,6 +50,15 @@ class MainViewModel: ViewModel() {
                 runNum = runs.size - 1
             run.value = runs[runNum]
         }
+    }
+
+    fun setRunEnabled(run: SoftmaxClient.Run, enabled: Boolean) {
+        enabledRuns[run.runId] = enabled
+        model.value = model.value
+    }
+
+    fun isRunEnabled(run: SoftmaxClient.Run): Boolean {
+        return enabledRuns.getOrDefault(run.runId, true)
     }
 
     fun observeModels(): LiveData<List<SoftmaxClient.Model>> = models

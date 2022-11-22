@@ -1,6 +1,7 @@
 package edu.utap.softmax
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -8,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import edu.utap.softmax.databinding.RowGraphEditBinding
 
 class GraphEditRowAdapter(
+    private val viewModel: MainViewModel,
     private val onClickListener: (SoftmaxClient.Run, Boolean) -> Unit
 ) : ListAdapter<SoftmaxClient.Run, GraphEditRowAdapter.ViewHolder>(GraphEditDiff()) {
 
@@ -36,12 +38,17 @@ class GraphEditRowAdapter(
                 rowBinding.graphSwitch.isChecked = !rowBinding.graphSwitch.isChecked
                 onClickListener(run, rowBinding.graphSwitch.isChecked)
             }
+
+            rowBinding.graphSwitch.setOnClickListener {
+                onClickListener(run, rowBinding.graphSwitch.isChecked)
+            }
         }
 
         fun bind(run: SoftmaxClient.Run) {
             this.run = run
             rowBinding.runNumTv.text = adapterPosition.toString()
             rowBinding.timestampTv.text = run.timestamp
+            rowBinding.graphSwitch.isChecked = viewModel.isRunEnabled(run)
         }
     }
 

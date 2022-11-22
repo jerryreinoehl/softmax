@@ -32,9 +32,10 @@ class GraphEditFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val adapter = GraphEditRowAdapter { run, selected ->
-
+        val adapter = GraphEditRowAdapter(viewModel) { run, selected ->
+            viewModel.setRunEnabled(run, selected)
         }
+
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
