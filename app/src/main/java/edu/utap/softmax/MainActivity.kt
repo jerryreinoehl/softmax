@@ -26,8 +26,13 @@ class MainActivity : AppCompatActivity() {
         activityMainBinding.recyclerView.adapter = adapter
         initRecyclerViewDivider(activityMainBinding.recyclerView)
 
+        activityMainBinding.swipeRefresh.setOnRefreshListener {
+            viewModel.fetchModels()
+        }
+
         viewModel.observeModels().observe(this) { models ->
             adapter.submitList(models)
+            activityMainBinding.swipeRefresh.isRefreshing = false
         }
 
         viewModel.fetchModels()
