@@ -8,6 +8,39 @@
     >
 
     <TextView
+        android:id="@+id/run_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:layout_margin="10dp"
+        android:text="Run"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/run_num_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:layout_margin="10dp"
+        app:layout_constraintBaseline_toBaselineOf="@id/run_tv"
+        app:layout_constraintStart_toEndOf="@id/run_tv"
+        tools:text="1"
+        />
+
+    <TextView
+        android:id="@+id/timestamp_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:layout_margin="10dp"
+        app:layout_constraintBaseline_toBaselineOf="@id/run_num_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Mon, Nov 21 2022 16:24:34"
+        />
+
+    <TextView
         android:id="@+id/step_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -16,7 +49,7 @@
         android:textStyle="bold"
         android:layout_margin="10dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/run_tv"
         app:layout_constraintEnd_toStartOf="@id/loss_tv"
         />
 

@@ -44,6 +44,8 @@ class StatListFragment: Fragment() {
 
         viewModel.observeRun().observe(viewLifecycleOwner) { run ->
             adapter.submitList(run.log)
+            binding.runNumTv.text = viewModel.getRunNum().toString()
+            binding.timestampTv.text = run.timestamp
         }
 
         binding.recyclerview.setOnTouchListener(object : OnSwipeTouchListener(requireContext()) {

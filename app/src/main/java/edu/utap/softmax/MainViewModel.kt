@@ -16,6 +16,8 @@ class MainViewModel: ViewModel() {
     }
     private var runNum = 0
 
+    fun getRunNum() = runNum
+
     fun fetchModels() = viewModelScope.launch(
         context = viewModelScope.coroutineContext + Dispatchers.IO
     ) {
