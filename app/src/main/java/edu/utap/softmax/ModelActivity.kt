@@ -46,6 +46,7 @@ class ModelActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             supportFragmentManager.commit {
                 add(R.id.middle_fragment, StatListFragment.newInstance())
+                add(R.id.bottom_fragment, NavigationFragment.newInstance())
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             }
         } else {

@@ -17,7 +17,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/middle_fragment"
         app:layout_constraintVertical_chainStyle="spread"
-        tools:layout="@layout/activity_main"
+        tools:layout="@layout/fragment_graph"
         />
 
     <FrameLayout
@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout="@layout/activity_main"
+        tools:layout="@layout/fragment_navigation"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
