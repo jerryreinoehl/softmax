@@ -32,7 +32,8 @@ class GraphEditRowAdapter(
         private lateinit var run: SoftmaxClient.Run
 
         init {
-            rowBinding.graphSwitch.setOnClickListener {
+            rowBinding.root.setOnClickListener {
+                rowBinding.graphSwitch.isChecked = !rowBinding.graphSwitch.isChecked
                 onClickListener(run, rowBinding.graphSwitch.isChecked)
             }
         }
