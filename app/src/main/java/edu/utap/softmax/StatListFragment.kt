@@ -50,13 +50,11 @@ class StatListFragment: Fragment() {
 
         binding.recyclerview.setOnTouchListener(object : OnSwipeTouchListener(requireContext()) {
             override fun onSwipeLeft() {
-                println("OnSwipeLeft")
-                viewModel.prevRun()
+                viewModel.nextRun()
             }
 
             override fun onSwipeRight() {
-                println("OnSwipeRight")
-                viewModel.nextRun()
+                viewModel.prevRun()
             }
         })
     }
