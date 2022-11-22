@@ -45,7 +45,7 @@ class LineGraphView @JvmOverloads constructor(
         field.onClearListener = onClearListener
     }
 
-    private var paths: MutableList<Path> = mutableListOf()
+    private var paths: MutableList<ColorPath> = mutableListOf()
     private var snapPoints: MutableList<Float> = mutableListOf()
     private var pointerX = 0f
 
@@ -70,19 +70,19 @@ class LineGraphView @JvmOverloads constructor(
     }
 
     private fun drawPlots(canvas: Canvas?) {
-        var colorIndex = 0
-
         paint.style = Paint.Style.STROKE
 
         paths.forEach { path ->
-            paint.color = COLORS[colorIndex++.mod(COLORS.size)]
-            canvas?.drawPath(path, paint)
+            paint.color = path.color
+            paint.strokeWidth = path.thickness
+            canvas?.drawPath(path.path, paint)
         }
     }
 
     private fun drawPointer(canvas: Canvas?) {
         paint.color = POINTER_COLOR
         paint.style = Paint.Style.STROKE
+        paint.strokeWidth = STROKE_WIDTH
         canvas?.drawLine(pointerX, 0f, pointerX, height.toFloat(), paint)
     }
 
@@ -158,7 +158,7 @@ class LineGraphView @JvmOverloads constructor(
                 snaps.add(x)
             }
 
-            paths.add(path)
+            paths.add(ColorPath(path, points.color, points.thickness))
             mergeSnapPoints(snapPoints, snaps)
         }
 
@@ -241,4 +241,6 @@ class LineGraphView @JvmOverloads constructor(
 
         return true
     }
+
+    data class ColorPath(val path: Path, val color: Int, val thickness: Float)
 }

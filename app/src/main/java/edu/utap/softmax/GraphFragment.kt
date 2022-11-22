@@ -1,5 +1,6 @@
 package edu.utap.softmax
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.SurfaceHolder
@@ -22,6 +23,14 @@ class GraphFragment : Fragment() {
         fun newInstance(): GraphFragment {
             return GraphFragment()
         }
+
+        private val COLORS = listOf(
+            Color.rgb(0xcc, 0x00, 0xcc),
+            Color.rgb(0xff, 0x66, 0x00),
+            Color.rgb(0x00, 0x99, 0xcc),
+            Color.rgb(0x33, 0x33, 0xff),
+            Color.rgb(0x33, 0x99, 0x66),
+        )
     }
 
     override fun onCreateView(
@@ -46,10 +55,14 @@ class GraphFragment : Fragment() {
     private fun plot(model: SoftmaxClient.Model, graphAdapter: LineGraphAdapter) {
         val lossPlot = Plot()
         val accuracyPlot = Plot()
+        var colorIndex = 0
 
         model.runs.forEach { run ->
             val lossPoints = Points()
             val accuracyPoints = Points()
+
+            lossPoints.color = COLORS[colorIndex++.mod(COLORS.size)]
+            accuracyPoints.color = COLORS[colorIndex++.mod(COLORS.size)]
 
             run.log.forEach { logItem ->
                 lossPoints.add(logItem.step.toFloat(), logItem.data.loss)

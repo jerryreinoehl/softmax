@@ -1,8 +1,12 @@
 package edu.utap.softmax.graph
 
+import android.graphics.Color
+
 class Points {
     private val points: MutableList<Point> = mutableListOf()
     val size get() = points.size
+    var color: Int = Color.RED
+    var thickness: Float = 4f
 
     fun add(point: Point) {
         points.add(point)
