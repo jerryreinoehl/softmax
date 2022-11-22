@@ -58,6 +58,8 @@ class LineGraphView @JvmOverloads constructor(
     private val onClearListener = object : LineGraphAdapter.OnClearListener() {
         override fun onClear() {
             paths = mutableListOf()
+            snapPoints = mutableListOf()
+            invalidate()
         }
     }
 
