@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <CheckBox
+        android:id="@+id/graph_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_margin="10dp"
+        android:checked="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/run_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:text="Run"
+        app:layout_constraintStart_toEndOf="@id/graph_switch"
+        app:layout_constraintBaseline_toBaselineOf="@id/graph_switch"
+        />
+
+    <TextView
+        android:id="@+id/run_num_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:layout_constraintStart_toEndOf="@id/run_tv"
+        app:layout_constraintBaseline_toBaselineOf="@id/run_tv"
+        tools:text="1"
+        />
+
+    <TextView
+        android:id="@+id/timestamp_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@id/run_tv"
+        tools:text="Mon, Nov 21 2022 16:24:34"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
