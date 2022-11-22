@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.view.View
+import android.view.View.OnClickListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
@@ -39,14 +40,22 @@ class ModelActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         supportFragmentManager.commit {
-            add(R.id.top_fragment, GraphFragment.newInstance())
+            replace(R.id.top_fragment, GraphFragment.newInstance())
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }
 
         if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            val navigationFragment = NavigationFragment.newInstance().apply {
+                onStatListClick = OnClickListener {
+                    startStatListFragment()
+                }
+                onGraphEditClick = OnClickListener {
+                    startGraphEditFragment()
+                }
+            }
             supportFragmentManager.commit {
-                add(R.id.middle_fragment, StatListFragment.newInstance())
-                add(R.id.bottom_fragment, NavigationFragment.newInstance())
+                replace(R.id.middle_fragment, StatListFragment.newInstance())
+                replace(R.id.bottom_fragment, navigationFragment)
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             }
         } else {
@@ -84,6 +93,20 @@ class ModelActivity : AppCompatActivity(), CoroutineScope by MainScope() {
                         View.SYSTEM_UI_FLAG_FULLSCREEN or
                         View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
             }
+        }
+    }
+
+    private fun startStatListFragment() {
+        supportFragmentManager.commit {
+            replace(R.id.middle_fragment, StatListFragment.newInstance())
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        }
+    }
+
+    private fun startGraphEditFragment() {
+        supportFragmentManager.commit {
+            replace(R.id.middle_fragment, GraphEditFragment.newInstance())
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }
     }
 
