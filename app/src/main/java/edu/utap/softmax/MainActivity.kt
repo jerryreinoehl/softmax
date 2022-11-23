@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -13,7 +14,19 @@ import androidx.recyclerview.widget.RecyclerView
 import edu.utap.softmax.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
     private val viewModel: MainViewModel by viewModels()
+
+    private val resultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val (address, port, updateSeconds) = SettingsActivity.getResult(result?.data)
+            viewModel.setServerAddress(address)
+            viewModel.setServerPort(port)
+            viewModel.setUpdateSeconds(updateSeconds)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,11 +67,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun actionSettings(): Boolean {
-        val address = viewModel.softmaxServerAddress
-        val port = viewModel.softmaxServerPort
-        val seconds = viewModel.softmaxUpdateSeconds
+        val address = viewModel.observeServerAddress().value ?: ""
+        val port = viewModel.observeServerPort().value ?: 80
+        val seconds = viewModel.observeUpdateSeconds().value ?: 2
 
-        startActivity(SettingsActivity.newIntent(this, address, port, seconds))
+        val intent = SettingsActivity.newIntent(this, address, port, seconds)
+        resultLauncher.launch(intent)
+
         return false
     }
 

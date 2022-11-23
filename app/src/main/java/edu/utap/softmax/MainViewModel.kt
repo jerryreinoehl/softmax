@@ -5,10 +5,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel: ViewModel() {
-    var softmaxServerAddress = "http://jerryr.us"
-    var softmaxServerPort = 23800
-    var softmaxUpdateSeconds = 2
-    private val softmaxClient = SoftmaxClient.create()
+    private var softmaxServerAddress = MutableLiveData("http://jerryr.us")
+    private var softmaxServerPort = MutableLiveData(23800)
+    private var softmaxUpdateSeconds = MutableLiveData(2)
+    private var softmaxClient = SoftmaxClient.create()
 
     private val models = MutableLiveData<List<SoftmaxClient.Model>>()
     private val model = MutableLiveData<SoftmaxClient.Model>()
@@ -87,4 +87,25 @@ class MainViewModel: ViewModel() {
     fun observeModel(): LiveData<SoftmaxClient.Model> = model
 
     fun observeRun(): LiveData<SoftmaxClient.Run> = run
+
+    fun observeServerAddress(): LiveData<String> = softmaxServerAddress
+
+    fun observeServerPort(): LiveData<Int> = softmaxServerPort
+
+    fun observeUpdateSeconds(): LiveData<Int> = softmaxUpdateSeconds
+
+    fun setServerAddress(serverAddress: String) {
+        softmaxServerAddress.value = serverAddress
+        println("new address $serverAddress")
+    }
+
+    fun setServerPort(serverPort: Int) {
+        softmaxServerPort.value = serverPort
+        println("new port $serverPort")
+    }
+
+    fun setUpdateSeconds(updateSeconds: Int) {
+        softmaxUpdateSeconds.value = updateSeconds
+        println("new secods $updateSeconds")
+    }
 }
