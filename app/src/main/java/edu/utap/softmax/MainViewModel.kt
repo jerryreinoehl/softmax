@@ -8,7 +8,10 @@ class MainViewModel: ViewModel() {
     private var softmaxServerAddress = MutableLiveData("http://jerryr.us")
     private var softmaxServerPort = MutableLiveData(23800)
     private var softmaxUpdateSeconds = MutableLiveData(2)
-    private var softmaxClient = SoftmaxClient.create()
+    private var softmaxClient = SoftmaxClient.create(
+        softmaxServerAddress?.value ?: "http:/jerryr.us",
+        softmaxServerPort?.value ?: 23800
+    )
 
     private val models = MutableLiveData<List<SoftmaxClient.Model>>()
     private val model = MutableLiveData<SoftmaxClient.Model>()
@@ -96,16 +99,20 @@ class MainViewModel: ViewModel() {
 
     fun setServerAddress(serverAddress: String) {
         softmaxServerAddress.value = serverAddress
-        println("new address $serverAddress")
     }
 
     fun setServerPort(serverPort: Int) {
         softmaxServerPort.value = serverPort
-        println("new port $serverPort")
     }
 
     fun setUpdateSeconds(updateSeconds: Int) {
         softmaxUpdateSeconds.value = updateSeconds
-        println("new secods $updateSeconds")
+    }
+
+    fun updateSoftmaxClient() {
+        softmaxClient = SoftmaxClient.create(
+            softmaxServerAddress?.value ?: "http://jerryr.us",
+            softmaxServerPort?.value ?: 23800
+        )
     }
 }

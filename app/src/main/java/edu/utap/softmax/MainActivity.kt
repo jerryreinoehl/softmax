@@ -25,6 +25,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.setServerAddress(address)
             viewModel.setServerPort(port)
             viewModel.setUpdateSeconds(updateSeconds)
+            viewModel.updateSoftmaxClient()
         }
     }
 

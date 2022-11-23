@@ -8,6 +8,7 @@ import retrofit2.http.Path
 import retrofit2.Retrofit
 
 import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.OkHttpClient
 
@@ -54,13 +55,22 @@ interface SoftmaxClient {
     )
 
     companion object {
-        private var httpUrl = HttpUrl.Builder()
+        private var defaultHttpUrl = HttpUrl.Builder()
             .scheme("http")
             .host("jerryr.us")
             .port(23800)
             .build()
 
-        fun create(): SoftmaxClient = create(httpUrl)
+        fun create(address: String, port: Int): SoftmaxClient {
+            var httpUrl = address.toHttpUrlOrNull() ?: defaultHttpUrl
+            return create(
+                HttpUrl.Builder()
+                .scheme(httpUrl.scheme)
+                .host(httpUrl.host)
+                .port(port)
+                .build()
+            )
+        }
 
         private fun create(httpUrl: HttpUrl): SoftmaxClient {
             val client = OkHttpClient.Builder()
