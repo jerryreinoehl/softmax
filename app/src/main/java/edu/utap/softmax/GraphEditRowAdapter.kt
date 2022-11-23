@@ -42,6 +42,20 @@ class GraphEditRowAdapter(
             rowBinding.graphSwitch.setOnClickListener {
                 onClickListener(run, rowBinding.graphSwitch.isChecked)
             }
+
+            rowBinding.root.setOnLongClickListener {
+                viewModel.disableAllRuns()
+                onClickListener(run, true)
+                notifyDataSetChanged()
+                true
+            }
+
+            rowBinding.graphSwitch.setOnLongClickListener {
+                viewModel.disableAllRuns()
+                onClickListener(run, true)
+                notifyDataSetChanged()
+                true
+            }
         }
 
         fun bind(run: SoftmaxClient.Run) {

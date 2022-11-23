@@ -73,6 +73,12 @@ class MainViewModel: ViewModel() {
         return enabledRuns.getOrDefault(run.runId, true)
     }
 
+    fun disableAllRuns() {
+        model?.value?.runs?.forEach { run ->
+            enabledRuns[run.runId] = false
+        }
+    }
+
     fun observeModels(): LiveData<List<SoftmaxClient.Model>> = models
 
     fun observeModel(): LiveData<SoftmaxClient.Model> = model
