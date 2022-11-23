@@ -77,7 +77,11 @@ class GraphFragment : Fragment() {
         }
 
         graphAdapter.clear()
-        graphAdapter.submitPlot(lossPlot)
-        graphAdapter.submitPlot(accuracyPlot)
+
+        if (viewModel.lossEnabled)
+            graphAdapter.submitPlot(lossPlot)
+
+        if (viewModel.accuracyEnabled)
+            graphAdapter.submitPlot(accuracyPlot)
     }
 }

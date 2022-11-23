@@ -39,6 +39,17 @@ class GraphEditFragment : Fragment() {
         binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
 
+        binding.lossSwitch.isChecked = viewModel.lossEnabled
+        binding.accuracySwitch.isChecked = viewModel.accuracyEnabled
+
+        binding.lossSwitch.setOnClickListener {
+            viewModel.lossEnabled = binding.lossSwitch.isChecked
+        }
+
+        binding.accuracySwitch.setOnClickListener {
+            viewModel.accuracyEnabled = binding.accuracySwitch.isChecked
+        }
+
         viewModel.observeModel().observe(viewLifecycleOwner) { model ->
             adapter.submitList(model.runs)
         }

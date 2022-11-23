@@ -17,6 +17,18 @@ class MainViewModel: ViewModel() {
     private var runNum = 0
     var enabledRuns: MutableMap<String, Boolean> = mutableMapOf()
 
+    var lossEnabled = true
+    set(value) {
+        field = value
+        model.value = model.value
+    }
+
+    var accuracyEnabled = true
+    set(value) {
+        field = value
+        model.value = model.value
+    }
+
     fun getRunNum() = runNum
 
     fun fetchModels() = viewModelScope.launch(
