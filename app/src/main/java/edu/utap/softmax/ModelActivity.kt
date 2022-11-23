@@ -23,7 +23,7 @@ class ModelActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     companion object {
         private const val REFRESH_RATE = 2000L
-        private const val MODEL_ID_KEY = "edu.utap.softmax.MODEL_ID_KEY"
+        private const val MODEL_ID_KEY = "edu.utap.softmax.ModelActivity.MODEL_ID_KEY"
 
         fun newIntent(context: Context, modelId: String): Intent {
             return Intent(context, ModelActivity::class.java).apply {

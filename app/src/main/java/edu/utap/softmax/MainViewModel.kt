@@ -5,6 +5,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel: ViewModel() {
+    var softmaxServerAddress = "http://jerryr.us"
+    var softmaxServerPort = 23800
+    var softmaxUpdateSeconds = 2
     private val softmaxClient = SoftmaxClient.create()
 
     private val models = MutableLiveData<List<SoftmaxClient.Model>>()

@@ -3,7 +3,9 @@ package edu.utap.softmax
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
 import android.os.Bundle
+import android.provider.Settings
 import android.view.Menu
+import android.view.MenuItem
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +44,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.action_settings -> actionSettings()
+            else -> true
+        }
+    }
+
+    private fun actionSettings(): Boolean {
+        val address = viewModel.softmaxServerAddress
+        val port = viewModel.softmaxServerPort
+        val seconds = viewModel.softmaxUpdateSeconds
+
+        startActivity(SettingsActivity.newIntent(this, address, port, seconds))
+        return false
     }
 
     private fun initRecyclerViewDivider(recyclerView: RecyclerView) {
