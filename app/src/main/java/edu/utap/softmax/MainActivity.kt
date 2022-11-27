@@ -1,11 +1,13 @@
 package edu.utap.softmax
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.edit
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,31 +19,22 @@ class MainActivity : AppCompatActivity() {
 
     private val viewModel: MainViewModel by viewModels()
 
-    private val resultLauncher = registerForActivityResult(
-        ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val (address, port, updateSeconds) = SettingsActivity.getResult(result?.data)
-            viewModel.setServerAddress(address)
-            viewModel.setServerPort(port)
-            viewModel.setUpdateSeconds(updateSeconds)
-            viewModel.updateSoftmaxClient()
-            viewModel.fetchModels()
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val activityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(activityMainBinding.root)
 
+        val sharedPreferences = getSharedPreferences("edu.utap.softmax", Context.MODE_PRIVATE)
+        val address = sharedPreferences.getString("serverAddress", "http://jerryr.us") ?: "http://jerryr.us"
+        val port = sharedPreferences.getInt("serverPort", 23800)
+        val updateSeconds = sharedPreferences.getInt("updateSeconds", 2)
+        viewModel.setServerAddress(address)
+        viewModel.setServerPort(port)
+        viewModel.setUpdateSeconds(updateSeconds)
+        viewModel.updateSoftmaxClient()
+
         val adapter = ModelRowAdapter() { model ->
-            val address = viewModel.observeServerAddress().value ?: "http://jerryr.us"
-            val port = viewModel.observeServerPort().value ?: 23800
-            val seconds = viewModel.observeUpdateSeconds().value ?: 2
-            val modelActivity = ModelActivity.newIntent(
-                this, model.modelId, address, port, seconds
-            )
+            val modelActivity = ModelActivity.newIntent(this, model.modelId)
             startActivity(modelActivity)
         }
 
@@ -81,12 +74,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun actionSettings(): Boolean {
-        val address = viewModel.observeServerAddress().value ?: ""
-        val port = viewModel.observeServerPort().value ?: 80
-        val seconds = viewModel.observeUpdateSeconds().value ?: 2
-
-        val intent = SettingsActivity.newIntent(this, address, port, seconds)
-        resultLauncher.launch(intent)
+        val intent = SettingsActivity.newIntent(this)
+        startActivity(intent)
 
         return false
     }

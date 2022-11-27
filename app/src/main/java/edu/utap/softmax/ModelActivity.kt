@@ -24,22 +24,10 @@ class ModelActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     companion object {
         private const val MODEL_ID_KEY = "edu.utap.softmax.ModelActivity.MODEL_ID_KEY"
-        private const val ADDRESS_KEY = "edu.utap.softmax.ModelActivity.ADDRESS_KEY"
-        private const val PORT_KEY = "edu.utap.softmax.ModelActivity.PORT_KEY"
-        private const val SECONDS_KEY = "edu.utap.softma.ModelActivity.SECONDS_KEY"
 
-        fun newIntent(
-            context: Context,
-            modelId: String,
-            address: String,
-            port: Int,
-            seconds: Int
-        ): Intent {
+        fun newIntent(context: Context, modelId: String): Intent {
             return Intent(context, ModelActivity::class.java).apply {
                 putExtra(MODEL_ID_KEY, modelId)
-                putExtra(ADDRESS_KEY, address)
-                putExtra(PORT_KEY, port)
-                putExtra(SECONDS_KEY, seconds)
             }
         }
     }
@@ -75,9 +63,11 @@ class ModelActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         }
 
         val modelId = intent.extras?.getString(MODEL_ID_KEY) ?: ""
-        val address = intent.extras?.getString(ADDRESS_KEY) ?: "http://jerryr.us"
-        val port = intent.extras?.getInt(PORT_KEY) ?: 23800
-        val updateSeconds = intent.extras?.getInt(SECONDS_KEY) ?: 2
+
+        val sharedPreferences = getSharedPreferences("edu.utap.softmax", Context.MODE_PRIVATE)
+        val address = sharedPreferences.getString("serverAddress", "http://jerryr.us") ?: "http://jerryr.us"
+        val port = sharedPreferences.getInt("serverPort", 23800)
+        val updateSeconds = sharedPreferences.getInt("updateSeconds", 2)
 
         viewModel.setServerAddress(address)
         viewModel.setServerPort(port)
