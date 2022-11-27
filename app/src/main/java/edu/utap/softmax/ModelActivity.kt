@@ -20,9 +20,9 @@ import kotlinx.coroutines.*
 class ModelActivity : AppCompatActivity(), CoroutineScope by MainScope() {
 
     private val viewModel: MainViewModel by viewModels()
+    private var updateInterval = 2000L
 
     companion object {
-        private const val REFRESH_RATE = 2000L
         private const val MODEL_ID_KEY = "edu.utap.softmax.ModelActivity.MODEL_ID_KEY"
         private const val ADDRESS_KEY = "edu.utap.softmax.ModelActivity.ADDRESS_KEY"
         private const val PORT_KEY = "edu.utap.softmax.ModelActivity.PORT_KEY"
@@ -83,6 +83,7 @@ class ModelActivity : AppCompatActivity(), CoroutineScope by MainScope() {
         viewModel.setServerPort(port)
         viewModel.setUpdateSeconds(updateSeconds)
         viewModel.updateSoftmaxClient()
+        updateInterval = updateSeconds * 1000L
 
         viewModel.observeModel().observe(this) { model ->
             supportActionBar?.title = model.name
@@ -135,7 +136,7 @@ class ModelActivity : AppCompatActivity(), CoroutineScope by MainScope() {
             val timerJob = async {
                 while (true) {
                     viewModel.fetchModel(modelId)
-                    delay(REFRESH_RATE)
+                    delay(updateInterval)
                 }
             }
         }
