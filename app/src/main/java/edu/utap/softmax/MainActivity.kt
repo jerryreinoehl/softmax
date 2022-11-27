@@ -3,13 +3,13 @@ package edu.utap.softmax
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.viewModels
 import android.os.Bundle
-import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 
 import edu.utap.softmax.databinding.ActivityMainBinding
 
@@ -26,6 +26,7 @@ class MainActivity : AppCompatActivity() {
             viewModel.setServerPort(port)
             viewModel.setUpdateSeconds(updateSeconds)
             viewModel.updateSoftmaxClient()
+            viewModel.fetchModels()
         }
     }
 
@@ -50,6 +51,13 @@ class MainActivity : AppCompatActivity() {
         viewModel.observeModels().observe(this) { models ->
             adapter.submitList(models)
             activityMainBinding.swipeRefresh.isRefreshing = false
+        }
+
+        viewModel.observeNetworkError().observe(this) { networkError ->
+            if (networkError) {
+                activityMainBinding.swipeRefresh.isRefreshing = false
+                Snackbar.make(activityMainBinding.root, "Network Error", Snackbar.LENGTH_SHORT).show()
+            }
         }
 
         viewModel.fetchModels()

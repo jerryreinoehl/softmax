@@ -35,12 +35,19 @@ class MainViewModel: ViewModel() {
         model.value = model.value
     }
 
+    private var networkError = MutableLiveData(false)
+
     fun getRunNum() = runNum
 
     fun fetchModels() = viewModelScope.launch(
         context = viewModelScope.coroutineContext + Dispatchers.IO
     ) {
-        models.postValue(softmaxClient.getModels())
+        try {
+            models.postValue(softmaxClient.getModels())
+        } catch (e: Exception) {
+            models.postValue(listOf())
+            networkError.postValue(true)
+        }
     }
 
     fun fetchModel(modelId: String) = viewModelScope.launch(
@@ -115,4 +122,6 @@ class MainViewModel: ViewModel() {
             softmaxServerPort?.value ?: 23800
         )
     }
+
+    fun observeNetworkError(): LiveData<Boolean> = networkError
 }
