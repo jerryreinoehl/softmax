@@ -36,7 +36,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(activityMainBinding.root)
 
         val adapter = ModelRowAdapter() { model ->
-            val modelActivity = ModelActivity.newIntent(this, model.modelId)
+            val address = viewModel.observeServerAddress().value ?: "http://jerryr.us"
+            val port = viewModel.observeServerPort().value ?: 23800
+            val seconds = viewModel.observeUpdateSeconds().value ?: 2
+            val modelActivity = ModelActivity.newIntent(
+                this, model.modelId, address, port, seconds
+            )
             startActivity(modelActivity)
         }
 
